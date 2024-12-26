@@ -1,7 +1,7 @@
 // Konfigurasi Blynk dan WiFi
 #define BLYNK_TEMPLATE_ID "TMPL60Pg5kZUs"
 #define BLYNK_TEMPLATE_NAME "GAS level monitoring system"
-#define BLYNK_AUTH_TOKEN " "
+#define BLYNK_AUTH_TOKEN "EYozH08_PCE92H1AUrjjCv0fQ6BJ-tDl"
 
 #include <Wire.h>
 #include <LiquidCrystal_I2C.h>
