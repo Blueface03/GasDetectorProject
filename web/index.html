@@ -1,74 +1,46 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gas Detector Control</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-            text-align: center;
-            background-color: #f9f9f9;
-        }
-        h1 {
-            color: #333;
-        }
-        p {
-            font-size: 18px;
-            color: #555;
-        }
-        .button {
-            padding: 10px 20px;
-            margin: 20px 0;
-            font-size: 16px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            background-color: #ff4c4c;
-            color: white;
-        }
-        .button:hover {
-            background-color: #e63939;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gas Detector</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>Gas Detector Control</h1>
-    <p>Gas Status: <span id="gas-status">Loading...</span></p>
-    <p>Gas Percentage: <span id="gas-percentage">Loading...</span>%</p>
-    <button id="buzzer-off-button" class="button">Turn Off Buzzer</button>
+  <header>
+    <h1>Gas Detector</h1>
+  </header>
+  <main>
+    <div class="status">
+      <p>Gas Level: <span id="gasLevel">Loading...</span>%</p>
+      <p>Status: <span id="gasStatus">Loading...</span></p>
+    </div>
+    <button class="button button-off" onclick="turnOffBuzzer()">Turn Buzzer Off</button>
+  </main>
+  <script>
+    const esp32ApiUrl = "http://<ESP32_IP_ADDRESS>/update"; // Ganti dengan alamat IP ESP32 Anda
 
-    <script>
-        const authToken = "EYozH08_PCE92H1AUrjjCv0fQ6BJ-tDl";
-        const apiUrl = "https://blynk.cloud/external/api";
-
-        const gasStatus = document.getElementById('gas-status');
-        const gasPercentage = document.getElementById('gas-percentage');
-        const buzzerOffButton = document.getElementById('buzzer-off-button');
-
-        function updateGasStatus() {
-            fetch(`${apiUrl}/get?token=${authToken}&V0,V1`)
-                .then(response => response.json())
-                .then(data => {
-                    console.log("API Response:", data); // Debugging
-                    gasPercentage.textContent = data[0] + "%";
-                    gasStatus.textContent = data[1];
-                })
-                .catch(error => {
-                    console.error("Error fetching data:", error);
-                    gasStatus.textContent = "Error fetching data";
-                    gasPercentage.textContent = "Error";
-                });
-        }
-
-        buzzerOffButton.addEventListener('click', () => {
-            fetch(`${apiUrl}/update?token=${authToken}&V3=0`)
-                .then(() => alert("Buzzer turned off."))
-                .catch(error => console.error("Error turning off buzzer:", error));
+    function fetchGasData() {
+      fetch(esp32ApiUrl)
+        .then(response => response.json())
+        .then(data => {
+          document.getElementById('gasLevel').innerText = data.gasLevel;
+          document.getElementById('gasStatus').innerText = data.gasStatus;
+        })
+        .catch(error => {
+          document.getElementById('gasLevel').innerText = "Error";
+          document.getElementById('gasStatus').innerText = "Error";
+          console.error("Error fetching data:", error);
         });
+    }
 
-        setInterval(updateGasStatus, 2000); // Fetch setiap 30 detik
-    </script>
+    function turnOffBuzzer() {
+      fetch("http://<ESP32_IP_ADDRESS>/buzzer/off")
+        .then(() => alert("Buzzer turned off"))
+        .catch((error) => alert("Failed to turn off buzzer: " + error));
+    }
+
+    setInterval(fetchGasData, 1000); // Update setiap 1 detik
+  </script>
 </body>
 </html>
