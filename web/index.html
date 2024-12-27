@@ -18,7 +18,7 @@
     <button class="button button-off" onclick="turnOffBuzzer()">Turn Buzzer Off</button>
   </main>
   <script>
-    const esp32ApiUrl = "http://<ESP32_IP_ADDRESS>/update"; // Ganti dengan alamat IP ESP32 Anda
+    const esp32ApiUrl = "http://192.168.1.17/update"; // Ganti dengan alamat IP ESP32 Anda
 
     function fetchGasData() {
       fetch(esp32ApiUrl)
